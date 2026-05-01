@@ -817,6 +817,7 @@ async function handleProdImage(e){
   e.target.value = '';
 }
 
+
 async function saveProd(){
   const name = document.getElementById('pName').value.trim();
   const statusEl = document.getElementById('prodStatus');
@@ -828,7 +829,7 @@ async function saveProd(){
     tag:          document.getElementById('pTag').value.trim(),
     link:         document.getElementById('pLink').value.trim(),
     imageData:    currentProdImg || null,
-    cardBindings: [...currentProdBindings],   // 綁定的牌名陣列（空=通用）
+    cardBindings: [...currentProdBindings],
     updatedAt:    new Date().toISOString()
   };
   statusEl.textContent = '儲存中…'; statusEl.className='status';
@@ -845,7 +846,7 @@ async function saveProd(){
     closeProdForm();
     renderProductList();
   } catch(err) {
-    statusEl.textContent = '儲存失敗：'+err.message;
+    statusEl.textContent = '儲存失敗：' + err.message;
     statusEl.className   = 'status err';
   }
 }
@@ -854,7 +855,7 @@ async function toggleProdActive(id, current){
   try {
     await fdb.collection(PROD_COLLECTION).doc(id).update({active: !current});
     renderProductList();
-  } catch(err) { alert('更新失敗：'+err.message); }
+  } catch(err) { alert('更新失敗：' + err.message); }
 }
 
 async function deleteProd(id){
@@ -862,7 +863,7 @@ async function deleteProd(id){
   try {
     await fdb.collection(PROD_COLLECTION).doc(id).delete();
     renderProductList();
-  } catch(err) { alert('刪除失敗：'+err.message); }
+  } catch(err) { alert('刪除失敗：' + err.message); }
 }
 
 function editProd(id, d){
@@ -877,69 +878,6 @@ function editProd(id, d){
   document.getElementById('prodStatus').textContent = '';
   updateProdThumb();
   openProdForm(false);
-}
-
-// ==============================
-//  牌面綁定 UI
-// ==============================
-function toggleBindPanel(){
-  const panel = document.getElementById('bindPanel');
-  const arrow = document.getElementById('bindArrow');
-  const open  = panel.style.display === 'none';
-  panel.style.display = open ? 'block' : 'none';
-  arrow.textContent   = open ? '▲ 收起' : '▼ 展開選擇';
-  if(open){ document.getElementById('bindSearch').value = ''; filterBindList(''); }
-}
-
-function buildBindList(){
-  const container = document.getElementById('bindList');
-  if(!container) return;
-  container.innerHTML = '';
-  TAROT_ALL.forEach(name => {
-    const sel = currentProdBindings.includes(name);
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.dataset.name = name;
-    btn.style.cssText = `width:100%;text-align:left;padding:.32rem .7rem;font-size:12px;border:none;border-bottom:1px solid var(--border);background:${sel?'rgba(107,63,192,.1)':'none'};color:${sel?'var(--primary)':'var(--text)'};cursor:pointer;display:flex;align-items:center;gap:.35rem`;
-    btn.innerHTML = `<span style="font-size:14px">${getSymbol(name)}</span> ${name} ${sel?'<span style="margin-left:auto;color:var(--primary);font-size:11px">✓</span>':''}`;
-    btn.addEventListener('click', () => toggleBinding(name));
-    container.appendChild(btn);
-  });
-}
-
-function filterBindList(q){
-  const container = document.getElementById('bindList');
-  if(!container) return;
-  [...container.querySelectorAll('button')].forEach(btn => {
-    btn.style.display = (!q || btn.dataset.name.includes(q)) ? '' : 'none';
-  });
-}
-
-function toggleBinding(name){
-  const idx = currentProdBindings.indexOf(name);
-  if(idx >= 0) currentProdBindings.splice(idx, 1);
-  else currentProdBindings.push(name);
-  buildBindList();
-  updateBindSummary();
-}
-
-function clearAllBindings(){
-  currentProdBindings = [];
-  buildBindList();
-  updateBindSummary();
-}
-
-function updateBindSummary(){
-  const el = document.getElementById('bindSummary');
-  if(!el) return;
-  if(!currentProdBindings.length){
-    el.textContent = '通用（全部牌面皆顯示）';
-    el.style.color = 'var(--muted)';
-  } else {
-    const preview = currentProdBindings.slice(0,3).join('、') + (currentProdBindings.length>3?`…等${currentProdBindings.length}張`:'');
-    el.textContent = `已選 ${currentProdBindings.length} 張：${preview}`;
-    el.style.color = 'var(--primary)';
-  }
 }
 
 async function renderProductList(){
@@ -963,20 +901,20 @@ async function renderProductList(){
     row.style.alignItems = 'flex-start';
     const imgHtml = d.imageData
       ? `<img src="${d.imageData}" style="width:44px;height:70px;border-radius:8px;object-fit:cover;border:1.5px solid var(--border2);flex-shrink:0">`
-      : `<div style="width:44px;height:70px;border-radius:8px;background:var(--surface2);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">✦</div>`;
+      : `<div style="width:44px;height:70px;border-radius:8px;background:var(--surface2);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">✶</div>`;
     const activeCls   = d.active ? 'badge-active' : 'badge-inactive';
     const activeLabel = d.active ? '✓ 上架中' : '✕ 已下架';
-    const bindings = Array.isArray(d.cardBindings) && d.cardBindings.length ? d.cardBindings : null;
-    const bindingLabel = bindings ? `適用：${bindings.slice(0,3).join('、')}${bindings.length>3?`…等${bindings.length}張`:''}` : '通用（所有牌面）';
     const meta = [d.price, d.tag].filter(Boolean).join(' · ');
+    const bindings = Array.isArray(d.cardBindings) && d.cardBindings.length
+      ? `<span style="font-size:10px;color:var(--primary);display:block;margin-top:2px">綁定牌：${d.cardBindings.slice(0,3).join('、')}${d.cardBindings.length>3?'…':''}</span>`
+      : `<span style="font-size:10px;color:var(--faint);display:block;margin-top:2px">通用（全部牌）</span>`;
     row.innerHTML = `
       <div style="display:flex;align-items:flex-start;gap:.7rem;flex:1;min-width:0">
         ${imgHtml}
         <div style="flex:1;min-width:0">
           <strong>${d.name}</strong>
           ${meta ? `<span>${meta}</span>` : ''}
-          ${d.description ? `<span style="display:block;font-size:11px;color:var(--faint);margin-top:2px">${d.description}</span>` : ''}
-          <span style="display:block;font-size:11px;color:${bindings?'var(--primary)':'var(--faint)'};margin-top:3px">🃏 ${bindingLabel}</span>
+          ${bindings}
         </div>
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:.3rem;flex-shrink:0">
@@ -990,6 +928,93 @@ async function renderProductList(){
     row.querySelector(`[data-delprod="${id}"]`).addEventListener('click', () => deleteProd(id));
   });
   el.appendChild(list);
+}
+
+// ==============================
+//  牌面綁定面板
+// ==============================
+function buildBindList(){
+  const container = document.getElementById('bindList');
+  if(!container) return;
+  container.innerHTML = '';
+  TAROT_ALL.forEach(name => {
+    const item = document.createElement('label');
+    item.style.cssText = 'display:flex;align-items:center;gap:.4rem;padding:.28rem .65rem;cursor:pointer;font-size:12px;border-bottom:1px solid var(--border)';
+    item.innerHTML = `<input type="checkbox" data-card="${name}" ${currentProdBindings.includes(name)?'checked':''}> ${getSymbol(name)} ${name}`;
+    item.querySelector('input').addEventListener('change', e => {
+      if(e.target.checked){
+        if(!currentProdBindings.includes(name)) currentProdBindings.push(name);
+      } else {
+        currentProdBindings = currentProdBindings.filter(n => n !== name);
+      }
+      updateBindSummary();
+    });
+    container.appendChild(item);
+  });
+}
+
+function toggleBindPanel(){
+  const panel = document.getElementById('bindPanel');
+  const arrow = document.getElementById('bindArrow');
+  if(!panel) return;
+  const isOpen = panel.style.display !== 'none';
+  panel.style.display = isOpen ? 'none' : 'block';
+  arrow.textContent   = isOpen ? '▼ 展開選擇' : '▲ 收起';
+  if(!isOpen) buildBindList();
+}
+
+function filterBindList(q){
+  const container = document.getElementById('bindList');
+  if(!container) return;
+  [...container.querySelectorAll('label')].forEach(lbl => {
+    const card = lbl.querySelector('input')?.dataset.card || '';
+    lbl.style.display = (!q || card.includes(q)) ? '' : 'none';
+  });
+}
+
+function clearAllBindings(){
+  currentProdBindings = [];
+  buildBindList();
+  updateBindSummary();
+}
+
+function updateBindSummary(){
+  const el = document.getElementById('bindSummary');
+  if(!el) return;
+  el.textContent = currentProdBindings.length
+    ? `已綁定 ${currentProdBindings.length} 張牌：${currentProdBindings.slice(0,3).join('、')}${currentProdBindings.length>3?'…':''}`
+    : '通用（全部牌面皆顯示）';
+  el.style.color = currentProdBindings.length ? 'var(--primary)' : 'var(--muted)';
+}
+
+// ==============================
+//  修正 toggle：改用 click + stopPropagation 確保只觸發一次
+// ==============================
+async function initShowProdToggle(){
+  const input = document.getElementById('showProdToggle');
+  const track = document.getElementById('showProdTrack');
+  const thumb = document.getElementById('showProdThumb');
+  if(!input || !track || !thumb) return;
+
+  // 讀取目前設定
+  try {
+    const snap = await fdb.doc(SETTINGS_DOC).get();
+    const show = snap.exists ? snap.data().showProducts !== false : true;
+    input.checked = show;
+    applyShowProdToggle(show);
+  } catch(e) { input.checked = true; applyShowProdToggle(true); }
+
+  async function doToggle(e){
+    if(e) e.stopPropagation();
+    const show = !input.checked;
+    input.checked = show;
+    applyShowProdToggle(show);
+    try { await fdb.doc(SETTINGS_DOC).set({showProducts: show}, {merge:true}); }
+    catch(err){ console.error('設定儲存失敗', err); }
+  }
+  // thumb 在 track 裡面：thumb 先攔截並阻止冒泡，track 只處理非 thumb 區域的點擊
+  thumb.addEventListener('click', doToggle);
+  track.addEventListener('click', e => { if(e.target !== thumb) doToggle(e); });
 }
 </script>
 </body>
