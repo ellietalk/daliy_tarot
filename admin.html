@@ -224,6 +224,24 @@ textarea{min-height:95px;resize:vertical}
             <div><label class="lbl">徽章標籤</label><input id="pTag" type="text" placeholder="🔮 占卜推薦"></div>
             <div><label class="lbl">購買連結</label><input id="pLink" type="url" placeholder="https://..."></div>
           </div>
+          <!-- 牌面綁定 -->
+          <div style="margin-bottom:.7rem">
+            <label class="lbl">適用塔羅牌 <span style="font-weight:400;color:var(--faint)">（不選 = 通用，每個人抽到任何牌都會顯示）</span></label>
+            <div style="border:1.5px solid var(--border2);border-radius:10px;overflow:hidden">
+              <div id="bindToggleBar" style="padding:.45rem .75rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;background:var(--surface2)" onclick="toggleBindPanel()">
+                <span id="bindSummary" style="font-size:12px;color:var(--muted)">通用（全部牌面皆顯示）</span>
+                <span id="bindArrow" style="font-size:11px;color:var(--primary)">▼ 展開選擇</span>
+              </div>
+              <div id="bindPanel" style="display:none;border-top:1px solid var(--border);padding:.5rem .75rem">
+                <input type="text" id="bindSearch" placeholder="搜尋牌名…" style="margin-bottom:.4rem;font-size:12px" oninput="filterBindList(this.value)">
+                <div style="max-height:130px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;background:var(--surface)">
+                  <div id="bindList"></div>
+                </div>
+                <button type="button" onclick="clearAllBindings()" style="margin-top:.4rem;font-size:11px;color:var(--danger);background:none;border:none;cursor:pointer;padding:0">✕ 清除全部（改回通用）</button>
+              </div>
+            </div>
+          </div>
+
           <div style="margin-bottom:.85rem">
             <label class="lbl">商品圖片（選填）</label>
             <div class="img-upload-row">
@@ -711,35 +729,32 @@ async function exportJson(){
 const SETTINGS_DOC = 'settings/global';
 
 async function initShowProdToggle(){
+  const input = document.getElementById('showProdToggle');
+
   // 讀取目前設定
   try {
     const snap = await fdb.doc(SETTINGS_DOC).get();
     const show = snap.exists ? snap.data().showProducts !== false : true;
+    input.checked = show;
     applyShowProdToggle(show);
-  } catch(e) { applyShowProdToggle(true); }
+  } catch(e) { input.checked = true; applyShowProdToggle(true); }
 
-  // 點擊 track 或 thumb 時切換
-  const track = document.getElementById('showProdTrack');
-  const thumb  = document.getElementById('showProdThumb');
-  const input  = document.getElementById('showProdToggle');
-  async function doToggle(){
-    const next = !input.checked;
-    input.checked = next;
-    applyShowProdToggle(next);
-    try { await fdb.doc(SETTINGS_DOC).set({showProducts: next}, {merge:true}); }
+  // ✅ 改用 change 事件：讓 label 原生行為切換 checkbox，我們只監聽結果
+  //    避免 track/thumb click 與 label 預設行為雙重觸發互相抵消的 bug
+  input.addEventListener('change', async () => {
+    const show = input.checked;
+    applyShowProdToggle(show);
+    try { await fdb.doc(SETTINGS_DOC).set({showProducts: show}, {merge:true}); }
     catch(e){ console.error('設定儲存失敗', e); }
-  }
-  track.addEventListener('click', doToggle);
-  thumb.addEventListener('click', doToggle);
+  });
 }
 
 function applyShowProdToggle(show){
-  const input = document.getElementById('showProdToggle');
   const track = document.getElementById('showProdTrack');
   const thumb = document.getElementById('showProdThumb');
   const label = document.getElementById('showProdLabel');
-  if(!input) return;
-  input.checked = show;
+  if(!track) return;
+  // 只更新視覺，不碰 input.checked（讓 change 事件自然管理狀態）
   track.style.background = show ? 'var(--primary)' : 'var(--faint)';
   thumb.style.transform   = show ? 'translateX(18px)' : 'translateX(0)';
   label.textContent       = show ? '前台顯示中' : '前台已隱藏';
@@ -749,16 +764,18 @@ function applyShowProdToggle(show){
 // ==============================
 //  推薦商品管理
 // ==============================
-let currentEditProdId = null;
-let currentProdImg    = null;
+let currentEditProdId  = null;
+let currentProdImg     = null;
+let currentProdBindings = [];   // 目前編輯中的商品所綁定的牌名陣列
 
 function openProdForm(reset=true){
   const form = document.getElementById('prodForm');
   form.style.display = 'block';
   document.getElementById('prodFormTitle').textContent = currentEditProdId ? '編輯商品' : '新增商品';
   if(reset){
-    currentEditProdId = null;
-    currentProdImg    = null;
+    currentEditProdId   = null;
+    currentProdImg      = null;
+    currentProdBindings = [];
     document.getElementById('pName').value  = '';
     document.getElementById('pPrice').value = '';
     document.getElementById('pDesc').value  = '';
@@ -767,6 +784,8 @@ function openProdForm(reset=true){
     document.getElementById('prodStatus').textContent = '';
     updateProdThumb();
   }
+  buildBindList();
+  updateBindSummary();
   form.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
@@ -804,12 +823,13 @@ async function saveProd(){
   if(!name){ statusEl.textContent='請填寫商品名稱'; statusEl.className='status err'; return; }
   const data = {
     name,
-    price:       document.getElementById('pPrice').value.trim(),
-    description: document.getElementById('pDesc').value.trim(),
-    tag:         document.getElementById('pTag').value.trim(),
-    link:        document.getElementById('pLink').value.trim(),
-    imageData:   currentProdImg || null,
-    updatedAt:   new Date().toISOString()
+    price:        document.getElementById('pPrice').value.trim(),
+    description:  document.getElementById('pDesc').value.trim(),
+    tag:          document.getElementById('pTag').value.trim(),
+    link:         document.getElementById('pLink').value.trim(),
+    imageData:    currentProdImg || null,
+    cardBindings: [...currentProdBindings],   // 綁定的牌名陣列（空=通用）
+    updatedAt:    new Date().toISOString()
   };
   statusEl.textContent = '儲存中…'; statusEl.className='status';
   try {
@@ -846,8 +866,9 @@ async function deleteProd(id){
 }
 
 function editProd(id, d){
-  currentEditProdId = id;
-  currentProdImg    = d.imageData || null;
+  currentEditProdId   = id;
+  currentProdImg      = d.imageData || null;
+  currentProdBindings = Array.isArray(d.cardBindings) ? [...d.cardBindings] : [];
   document.getElementById('pName').value  = d.name  || '';
   document.getElementById('pPrice').value = d.price || '';
   document.getElementById('pDesc').value  = d.description || '';
@@ -856,6 +877,69 @@ function editProd(id, d){
   document.getElementById('prodStatus').textContent = '';
   updateProdThumb();
   openProdForm(false);
+}
+
+// ==============================
+//  牌面綁定 UI
+// ==============================
+function toggleBindPanel(){
+  const panel = document.getElementById('bindPanel');
+  const arrow = document.getElementById('bindArrow');
+  const open  = panel.style.display === 'none';
+  panel.style.display = open ? 'block' : 'none';
+  arrow.textContent   = open ? '▲ 收起' : '▼ 展開選擇';
+  if(open){ document.getElementById('bindSearch').value = ''; filterBindList(''); }
+}
+
+function buildBindList(){
+  const container = document.getElementById('bindList');
+  if(!container) return;
+  container.innerHTML = '';
+  TAROT_ALL.forEach(name => {
+    const sel = currentProdBindings.includes(name);
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.dataset.name = name;
+    btn.style.cssText = `width:100%;text-align:left;padding:.32rem .7rem;font-size:12px;border:none;border-bottom:1px solid var(--border);background:${sel?'rgba(107,63,192,.1)':'none'};color:${sel?'var(--primary)':'var(--text)'};cursor:pointer;display:flex;align-items:center;gap:.35rem`;
+    btn.innerHTML = `<span style="font-size:14px">${getSymbol(name)}</span> ${name} ${sel?'<span style="margin-left:auto;color:var(--primary);font-size:11px">✓</span>':''}`;
+    btn.addEventListener('click', () => toggleBinding(name));
+    container.appendChild(btn);
+  });
+}
+
+function filterBindList(q){
+  const container = document.getElementById('bindList');
+  if(!container) return;
+  [...container.querySelectorAll('button')].forEach(btn => {
+    btn.style.display = (!q || btn.dataset.name.includes(q)) ? '' : 'none';
+  });
+}
+
+function toggleBinding(name){
+  const idx = currentProdBindings.indexOf(name);
+  if(idx >= 0) currentProdBindings.splice(idx, 1);
+  else currentProdBindings.push(name);
+  buildBindList();
+  updateBindSummary();
+}
+
+function clearAllBindings(){
+  currentProdBindings = [];
+  buildBindList();
+  updateBindSummary();
+}
+
+function updateBindSummary(){
+  const el = document.getElementById('bindSummary');
+  if(!el) return;
+  if(!currentProdBindings.length){
+    el.textContent = '通用（全部牌面皆顯示）';
+    el.style.color = 'var(--muted)';
+  } else {
+    const preview = currentProdBindings.slice(0,3).join('、') + (currentProdBindings.length>3?`…等${currentProdBindings.length}張`:'');
+    el.textContent = `已選 ${currentProdBindings.length} 張：${preview}`;
+    el.style.color = 'var(--primary)';
+  }
 }
 
 async function renderProductList(){
@@ -882,6 +966,8 @@ async function renderProductList(){
       : `<div style="width:44px;height:70px;border-radius:8px;background:var(--surface2);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">✦</div>`;
     const activeCls   = d.active ? 'badge-active' : 'badge-inactive';
     const activeLabel = d.active ? '✓ 上架中' : '✕ 已下架';
+    const bindings = Array.isArray(d.cardBindings) && d.cardBindings.length ? d.cardBindings : null;
+    const bindingLabel = bindings ? `適用：${bindings.slice(0,3).join('、')}${bindings.length>3?`…等${bindings.length}張`:''}` : '通用（所有牌面）';
     const meta = [d.price, d.tag].filter(Boolean).join(' · ');
     row.innerHTML = `
       <div style="display:flex;align-items:flex-start;gap:.7rem;flex:1;min-width:0">
@@ -890,6 +976,7 @@ async function renderProductList(){
           <strong>${d.name}</strong>
           ${meta ? `<span>${meta}</span>` : ''}
           ${d.description ? `<span style="display:block;font-size:11px;color:var(--faint);margin-top:2px">${d.description}</span>` : ''}
+          <span style="display:block;font-size:11px;color:${bindings?'var(--primary)':'var(--faint)'};margin-top:3px">🃏 ${bindingLabel}</span>
         </div>
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:.3rem;flex-shrink:0">

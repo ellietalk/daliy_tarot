@@ -201,7 +201,7 @@ function drawFrontCanvas(canvas){
   ctx.closePath();ctx.globalAlpha=.15;ctx.fillStyle='#8060c0';ctx.fill();ctx.globalAlpha=.6;ctx.stroke();ctx.restore()
 }
 
-let done=false, currentData=null;
+let done=false, currentData=null, allProducts=[];
 
 async function initFrontend(){
   document.getElementById('dateBadge').textContent = fmtDate(today());
@@ -314,7 +314,7 @@ function showResult(idx){
       <button class="again-btn" onclick="doReset()">再抽一次</button>
     </div>`;
   el.classList.add('show');
-  document.getElementById('productsArea').style.display = '';
+  showProductsForCard(card.name || '');
 }
 
 function doReset(){
@@ -331,29 +331,40 @@ function doReset(){
 //  推薦商品區
 // ==============================
 async function loadProducts(){
-  // 先讀全域開關，關閉時直接不顯示
+  // 讀全域開關
   try {
     const cfg = await fdb.doc('settings/global').get();
     if(cfg.exists && cfg.data().showProducts === false) return;
   } catch(e) { /* 讀不到就當作開啟 */ }
 
-  let docs = [];
   try {
     const snap = await fdb.collection(PROD_COLLECTION).get();
-    snap.forEach(d => docs.push({id:d.id, data:d.data()}));
+    allProducts = [];
+    snap.forEach(d => { if(d.data().active) allProducts.push({id:d.id, data:d.data()}); });
+    allProducts.sort((a,b) => (a.data.createdAt||'').localeCompare(b.data.createdAt||''));
   } catch(err) {
     console.warn('商品讀取失敗（不影響主功能）', err);
-    return;
   }
-  const active = docs.filter(d => d.data.active);
-  if(!active.length) return;
-  active.sort((a,b) => (a.data.createdAt||'').localeCompare(b.data.createdAt||''));
-  renderProducts(active);
+}
+
+// 根據抽到的牌名篩選並顯示商品
+function showProductsForCard(cardName){
+  const area = document.getElementById('productsArea');
+  if(!allProducts.length){ area.style.display='none'; return; }
+
+  // 過濾：cardBindings 有值 → 只在符合的牌顯示；空陣列或無此欄位 → 通用（全牌都顯示）
+  const filtered = allProducts.filter(({data:d}) => {
+    const bindings = Array.isArray(d.cardBindings) ? d.cardBindings : [];
+    return bindings.length === 0 || bindings.includes(cardName);
+  });
+
+  if(!filtered.length){ area.style.display='none'; return; }
+  renderProducts(filtered);
+  area.style.display = '';
 }
 
 function renderProducts(docs){
   const area = document.getElementById('productsArea');
-  area.style.display = 'none';
   area.innerHTML = `
     <div class="products-title">✦ 推薦給你 ✦</div>
     <div class="products-grid" id="prodGrid"></div>`;
