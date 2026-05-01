@@ -201,14 +201,12 @@ textarea{min-height:95px;resize:vertical}
         <h2>推薦商品管理</h2>
         <p>設定前台展示的推薦商品。可個別上架 / 下架，也可用右側開關一鍵全部隱藏。</p>
       </div>
-      <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;flex-shrink:0;padding-top:2px">
+      <div style="display:flex;align-items:center;gap:.5rem;flex-shrink:0;padding-top:2px">
         <span style="font-size:12px;font-weight:700;color:var(--muted)" id="showProdLabel">前台顯示中</span>
-        <div style="position:relative;width:40px;height:22px">
-          <input type="checkbox" id="showProdToggle" checked style="opacity:0;width:0;height:0;position:absolute">
-          <span id="showProdTrack" style="position:absolute;inset:0;border-radius:22px;background:var(--primary);transition:background .2s;cursor:pointer"></span>
-          <span id="showProdThumb" style="position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.18)"></span>
+        <div id="showProdTrack" style="position:relative;width:40px;height:22px;border-radius:22px;background:var(--primary);transition:background .2s;cursor:pointer">
+          <span id="showProdThumb" style="position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.18)"></span>
         </div>
-      </label>
+      </div>
     </div>
     <div class="sb">
       <!-- 新增/編輯商品表單（預設隱藏） -->
@@ -675,7 +673,13 @@ async function clearDate(){
   if(!confirm(`確定要從雲端刪除 ${date} 的內容嗎？此動作無法復原。`)) return;
   try {
     await fdb.collection(COLLECTION).doc(date).delete();
-    setStatus(`已刪除 ${date}`,'ok'); renderSavedList();
+    // 重設編輯器回初始狀態
+    cardCount = 2;
+    cardSelections = [];
+    document.querySelectorAll('.cnt-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.n) === 2));
+    rebuildEditors();
+    setStatus(`已刪除 ${date}`,'ok');
+    renderSavedList();
   } catch(err) {
     setStatus('刪除失敗：'+err.message,'err');
   }
@@ -728,37 +732,15 @@ async function exportJson(){
 // ==============================
 const SETTINGS_DOC = 'settings/global';
 
-async function initShowProdToggle(){
-  const input = document.getElementById('showProdToggle');
-
-  // 讀取目前設定
-  try {
-    const snap = await fdb.doc(SETTINGS_DOC).get();
-    const show = snap.exists ? snap.data().showProducts !== false : true;
-    input.checked = show;
-    applyShowProdToggle(show);
-  } catch(e) { input.checked = true; applyShowProdToggle(true); }
-
-  // ✅ 改用 change 事件：讓 label 原生行為切換 checkbox，我們只監聽結果
-  //    避免 track/thumb click 與 label 預設行為雙重觸發互相抵消的 bug
-  input.addEventListener('change', async () => {
-    const show = input.checked;
-    applyShowProdToggle(show);
-    try { await fdb.doc(SETTINGS_DOC).set({showProducts: show}, {merge:true}); }
-    catch(e){ console.error('設定儲存失敗', e); }
-  });
-}
-
 function applyShowProdToggle(show){
   const track = document.getElementById('showProdTrack');
   const thumb = document.getElementById('showProdThumb');
   const label = document.getElementById('showProdLabel');
   if(!track) return;
-  // 只更新視覺，不碰 input.checked（讓 change 事件自然管理狀態）
   track.style.background = show ? 'var(--primary)' : 'var(--faint)';
-  thumb.style.transform   = show ? 'translateX(18px)' : 'translateX(0)';
-  label.textContent       = show ? '前台顯示中' : '前台已隱藏';
-  label.style.color       = show ? 'var(--primary)' : 'var(--faint)';
+  thumb.style.transform  = show ? 'translateX(18px)' : 'translateX(0)';
+  label.textContent      = show ? '前台顯示中' : '前台已隱藏';
+  label.style.color      = show ? 'var(--primary)' : 'var(--faint)';
 }
 
 // ==============================
@@ -988,33 +970,27 @@ function updateBindSummary(){
 }
 
 // ==============================
-//  修正 toggle：改用 click + stopPropagation 確保只觸發一次
+//  推薦商品開關（純 JS 狀態，無 checkbox，無 label 干擾）
 // ==============================
+let _showProdState = true;
+
 async function initShowProdToggle(){
-  const input = document.getElementById('showProdToggle');
   const track = document.getElementById('showProdTrack');
-  const thumb = document.getElementById('showProdThumb');
-  if(!input || !track || !thumb) return;
+  if(!track) return;
 
   // 讀取目前設定
   try {
     const snap = await fdb.doc(SETTINGS_DOC).get();
-    const show = snap.exists ? snap.data().showProducts !== false : true;
-    input.checked = show;
-    applyShowProdToggle(show);
-  } catch(e) { input.checked = true; applyShowProdToggle(true); }
+    _showProdState = snap.exists ? snap.data().showProducts !== false : true;
+  } catch(e) { _showProdState = true; }
+  applyShowProdToggle(_showProdState);
 
-  async function doToggle(e){
-    if(e) e.stopPropagation();
-    const show = !input.checked;
-    input.checked = show;
-    applyShowProdToggle(show);
-    try { await fdb.doc(SETTINGS_DOC).set({showProducts: show}, {merge:true}); }
+  track.addEventListener('click', async () => {
+    _showProdState = !_showProdState;
+    applyShowProdToggle(_showProdState);
+    try { await fdb.doc(SETTINGS_DOC).set({showProducts: _showProdState}, {merge:true}); }
     catch(err){ console.error('設定儲存失敗', err); }
-  }
-  // thumb 在 track 裡面：thumb 先攔截並阻止冒泡，track 只處理非 thumb 區域的點擊
-  thumb.addEventListener('click', doToggle);
-  track.addEventListener('click', e => { if(e.target !== thumb) doToggle(e); });
+  });
 }
 </script>
 </body>
