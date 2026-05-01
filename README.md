@@ -15,7 +15,6 @@
 
 ### 1. 啟用 Firebase Firestore
 
-1. 打開 https://console.firebase.google.com/project/tarot-test-10961
 2. 左側選單 → **Firestore Database** → 點「建立資料庫」
 3. 選「在生產模式中啟動」(Production mode)
 4. 區域選離你近的（例如 `asia-east1` 台灣／`asia-northeast1` 東京）
