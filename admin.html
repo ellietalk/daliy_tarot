@@ -20,7 +20,7 @@ html,body{min-height:100%;background:var(--bg);font-family:'Noto Sans TC',sans-s
 .topbar{background:linear-gradient(120deg,#1e1040,#2e1870);padding:1rem 1.5rem;display:flex;align-items:center;gap:.9rem;box-shadow:0 4px 24px rgba(30,16,64,.4)}
 .tl{font-family:'Cinzel',serif;font-size:17px;color:#e8d8ff;letter-spacing:.1em;text-shadow:0 0 16px rgba(180,140,255,.4)}
 .ts{font-size:11px;color:rgba(180,155,255,.55);letter-spacing:.08em}
-.tb{margin-left:auto;font-size:11px;background:rgba(180,140,255,.18);border:1px solid rgba(180,140,255,.3);color:rgba(200,175,255,.8);padding:3px 14px;border-radius:20px}
+.tb{margin-left:auto;font-size:11px;background:rgba(180,140,255,.18);border:1px solid rgba(180,140,255,.3);color:rgba(200,175,255,.8);padding:3px 14px;border-radius:20px;cursor:pointer}
 
 .shell{max-width:860px;margin:0 auto;padding:1.4rem}
 .section{background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);margin-bottom:1.4rem;overflow:hidden}
@@ -31,10 +31,19 @@ html,body{min-height:100%;background:var(--bg);font-family:'Noto Sans TC',sans-s
 
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 label.lbl{display:block;font-size:11.5px;font-weight:700;color:var(--muted);margin-bottom:5px;letter-spacing:.04em}
-input[type="text"],input[type="password"],input[type="date"],input[type="url"],textarea{width:100%;padding:.58rem .8rem;border:1.5px solid var(--border2);border-radius:10px;background:var(--surface);color:var(--text);font-family:'Noto Sans TC',sans-serif;font-size:13px;outline:none;transition:border-color .18s}
-input:focus,textarea:focus{border-color:var(--primary)}
+input[type="text"],input[type="password"],input[type="date"],input[type="url"],textarea,select{width:100%;padding:.58rem .8rem;border:1.5px solid var(--border2);border-radius:10px;background:var(--surface);color:var(--text);font-family:'Noto Sans TC',sans-serif;font-size:13px;outline:none;transition:border-color .18s;appearance:none}
+input:focus,textarea:focus,select:focus{border-color:var(--primary)}
 textarea{min-height:95px;resize:vertical}
 .help{font-size:11px;color:var(--faint);margin-top:3px}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b5f85' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:2rem}
+
+/* theme preview chip */
+.theme-chips{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.4rem}
+.theme-chip{padding:.28rem .8rem;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:2px solid transparent;transition:all .18s;user-select:none}
+.theme-chip.active{border-color:var(--primary);box-shadow:0 0 0 3px rgba(107,63,192,.18)}
+.chip-purple{background:linear-gradient(120deg,#6b3fc0,#a050e8);color:#fff}
+.chip-soft{background:linear-gradient(120deg,#e8607a,#f09ab0);color:#fff}
+.chip-earth{background:linear-gradient(120deg,#7a5c38,#b88a5a);color:#fff}
 
 /* count buttons */
 .count-row{display:flex;gap:.55rem;flex-wrap:wrap}
@@ -76,7 +85,7 @@ textarea{min-height:95px;resize:vertical}
 .img-hint{font-size:11px;color:var(--faint);line-height:1.5}
 
 /* preview strip */
-.prev-strip{display:flex;gap:10px;flex-wrap:wrap;margin-top:1rem;padding:1rem;background:linear-gradient(155deg,#1a1040,#2a1460);border-radius:14px}
+.prev-strip{display:flex;gap:10px;flex-wrap:wrap;margin-top:1rem;padding:1rem;background:linear-gradient(155deg,#1a1040,#2a1460);border-radius:14px;min-height:80px}
 .mc{width:72px;background:linear-gradient(155deg,#150f35,#221660 50%,#2e1258);border:1.5px solid rgba(160,130,255,.45);border-radius:13px;padding:.5rem .3rem .4rem;text-align:center;box-shadow:0 4px 14px rgba(60,30,120,.35);overflow:hidden}
 .mc-img{width:100%;aspect-ratio:5/8;object-fit:cover;border-radius:8px;display:block;margin-bottom:3px}
 .mc-sym{font-size:22px;line-height:1;margin-bottom:3px}
@@ -104,10 +113,13 @@ textarea{min-height:95px;resize:vertical}
 
 /* product management */
 .prod-form-box{background:var(--surface2);border:1.5px solid var(--border2);border-radius:14px;padding:1rem 1.1rem;margin-bottom:1rem}
-.prod-mini-thumb{width:44px;height:70px;border-radius:8px;border:1.5px solid var(--border2);background:var(--surface2);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;font-size:18px}
-.prod-mini-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .badge-active{background:rgba(58,122,30,.1);border:1.5px solid rgba(58,122,30,.35);color:#3a7a1e}
 .badge-inactive{background:rgba(192,68,106,.08);border:1.5px solid rgba(192,68,106,.28);color:var(--danger)}
+
+/* bind section */
+.bind-section-title{font-size:10.5px;font-weight:700;color:var(--faint);letter-spacing:.06em;padding:.3rem .65rem;background:var(--surface2);border-bottom:1px solid var(--border)}
+.bind-pos-item{display:flex;align-items:center;gap:.4rem;padding:.28rem .65rem;cursor:pointer;font-size:12px;border-bottom:1px solid var(--border);background:rgba(107,63,192,.04)}
+.bind-pos-item:hover{background:rgba(107,63,192,.1)}
 
 /* login gate */
 .gate{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 80px);padding:1.4rem}
@@ -117,6 +129,10 @@ textarea{min-height:95px;resize:vertical}
 .gate-sub{font-size:12px;color:var(--muted);margin-bottom:1.4rem}
 .gate-input{margin-bottom:.8rem;text-align:left}
 
+/* rules hint box */
+.rules-box{background:rgba(192,100,30,.06);border:1.5px solid rgba(192,100,30,.28);border-radius:12px;padding:.9rem 1rem;font-size:12px;color:#7a4020;line-height:1.7;margin-top:.8rem}
+.rules-box code{background:rgba(192,100,30,.1);border-radius:4px;padding:1px 5px;font-size:11px;font-family:monospace}
+
 #app{display:none}
 
 @media(max-width:600px){.shell{padding:1rem}.row2{grid-template-columns:1fr}.actions{flex-direction:column}.btn{width:100%}}
@@ -125,7 +141,7 @@ textarea{min-height:95px;resize:vertical}
 <body>
 <div class="topbar">
   <div><div class="tl">✦ TAROT ADMIN</div><div class="ts">每日塔羅後台管理系統</div></div>
-  <div class="tb">管理者專用</div>
+  <button class="tb" id="logoutBtn" style="display:none">登出</button>
 </div>
 
 <!-- 密碼門 -->
@@ -147,9 +163,9 @@ textarea{min-height:95px;resize:vertical}
 <div id="app">
 <div class="shell">
 
-  <!-- ① 品牌設定 -->
+  <!-- ① 品牌與前台主題設定 -->
   <div class="section">
-    <div class="sh"><h2>品牌與聯絡設定</h2><p>這些設定會跟著當天的牌陣一起儲存到雲端，前台會自動讀取。</p></div>
+    <div class="sh"><h2>品牌 · 聯絡 · 前台主題</h2><p>設定前台顯示的品牌資訊與整體色彩風格。</p></div>
     <div class="sb">
       <div class="row2" style="margin-bottom:.8rem">
         <div><label class="lbl">品牌名稱</label><input id="brandName" type="text" value="每日塔羅" placeholder="前台頂部顯示名稱"></div>
@@ -159,7 +175,16 @@ textarea{min-height:95px;resize:vertical}
         <div><label class="lbl">聯絡按鈕文字</label><input id="contactLabel" type="text" value="預約占卜"></div>
         <div><label class="lbl">聯絡連結（LINE / IG / 表單）</label><input id="contactLink" type="url" placeholder="https://lin.ee/..."></div>
       </div>
-      <div><label class="lbl">結果頁末段提示文字</label><input id="contactCta" type="text" value="如果你想深入了解更多，歡迎預約一對一占卜 🌙"></div>
+      <div style="margin-bottom:.9rem"><label class="lbl">結果頁末段提示文字</label><input id="contactCta" type="text" value="如果你想深入了解更多，歡迎預約一對一占卜 🌙"></div>
+      <div>
+        <label class="lbl">前台色彩主題</label>
+        <div class="theme-chips">
+          <div class="theme-chip chip-purple active" data-theme="purple" onclick="selectTheme('purple')">🔮 神秘紫</div>
+          <div class="theme-chip chip-soft" data-theme="soft" onclick="selectTheme('soft')">🌸 溫柔簡約</div>
+          <div class="theme-chip chip-earth" data-theme="earth" onclick="selectTheme('earth')">🌿 大地色</div>
+        </div>
+        <div class="help" style="margin-top:.35rem">主題會即時儲存，前台重新整理後生效。</div>
+      </div>
     </div>
   </div>
 
@@ -167,7 +192,7 @@ textarea{min-height:95px;resize:vertical}
   <div class="section">
     <div class="sh">
       <h2>今日牌陣設定</h2>
-      <p>設定日期與張數，依序為每張牌選牌名（<strong>選填</strong>，不選則前台顯示 A/B/C 代號）、上傳圖片（選填）、填寫解說。</p>
+      <p>設定日期與張數。牌名為<strong>選填</strong>，不選則前台顯示 A/B/C 代號。圖片建議 5:8 直向比例。</p>
     </div>
     <div class="sb">
       <div class="row2" style="margin-bottom:1.1rem">
@@ -199,7 +224,7 @@ textarea{min-height:95px;resize:vertical}
     <div class="sh" style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap">
       <div>
         <h2>推薦商品管理</h2>
-        <p>設定前台展示的推薦商品。可個別上架 / 下架，也可用右側開關一鍵全部隱藏。</p>
+        <p>設定前台展示的商品。可按牌名或位置（A/B/C）精準綁定，或通用所有牌。</p>
       </div>
       <div style="display:flex;align-items:center;gap:.5rem;flex-shrink:0;padding-top:2px">
         <span style="font-size:12px;font-weight:700;color:var(--muted)" id="showProdLabel">前台顯示中</span>
@@ -209,7 +234,6 @@ textarea{min-height:95px;resize:vertical}
       </div>
     </div>
     <div class="sb">
-      <!-- 新增/編輯商品表單（預設隱藏） -->
       <div id="prodForm" style="display:none">
         <div class="prod-form-box">
           <div style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:.85rem" id="prodFormTitle">新增商品</div>
@@ -224,7 +248,7 @@ textarea{min-height:95px;resize:vertical}
           </div>
           <!-- 牌面綁定 -->
           <div style="margin-bottom:.7rem">
-            <label class="lbl">適用塔羅牌 <span style="font-weight:400;color:var(--faint)">（不選 = 通用，每個人抽到任何牌都會顯示）</span></label>
+            <label class="lbl">適用牌面 <span style="font-weight:400;color:var(--faint)">（不選 = 通用，抽到任何牌都顯示）</span></label>
             <div style="border:1.5px solid var(--border2);border-radius:10px;overflow:hidden">
               <div id="bindToggleBar" style="padding:.45rem .75rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;background:var(--surface2)" onclick="toggleBindPanel()">
                 <span id="bindSummary" style="font-size:12px;color:var(--muted)">通用（全部牌面皆顯示）</span>
@@ -232,14 +256,13 @@ textarea{min-height:95px;resize:vertical}
               </div>
               <div id="bindPanel" style="display:none;border-top:1px solid var(--border);padding:.5rem .75rem">
                 <input type="text" id="bindSearch" placeholder="搜尋牌名…" style="margin-bottom:.4rem;font-size:12px" oninput="filterBindList(this.value)">
-                <div style="max-height:130px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;background:var(--surface)">
+                <div style="max-height:160px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;background:var(--surface)">
                   <div id="bindList"></div>
                 </div>
                 <button type="button" onclick="clearAllBindings()" style="margin-top:.4rem;font-size:11px;color:var(--danger);background:none;border:none;cursor:pointer;padding:0">✕ 清除全部（改回通用）</button>
               </div>
             </div>
           </div>
-
           <div style="margin-bottom:.85rem">
             <label class="lbl">商品圖片（選填）</label>
             <div class="img-upload-row">
@@ -258,12 +281,10 @@ textarea{min-height:95px;resize:vertical}
           <div id="prodStatus" class="status"></div>
         </div>
       </div>
-      <!-- 工具列 -->
       <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:.85rem">
         <button class="btn btn-s" id="addProdBtn">＋ 新增商品</button>
         <button class="btn btn-s" id="refreshProdBtn">🔄 重新整理</button>
       </div>
-      <!-- 商品列表 -->
       <div id="prodList"><div class="empty">點「重新整理」載入商品列表</div></div>
     </div>
   </div>
@@ -280,16 +301,32 @@ textarea{min-height:95px;resize:vertical}
     </div>
   </div>
 
+  <!-- Firestore 規則提示 -->
+  <div class="section">
+    <div class="sh"><h2>⚠️ Firestore 安全規則</h2><p>如果儲存失敗，請先到 Firebase Console 部署以下規則。</p></div>
+    <div class="sb">
+      <div class="rules-box">
+        <strong>步驟：</strong>Firebase Console → Firestore Database → 規則 → 貼上以下內容 → 發布<br><br>
+        <code>rules_version = '2';</code><br>
+        <code>service cloud.firestore {</code><br>
+        <code>&nbsp;&nbsp;match /databases/{database}/documents {</code><br>
+        <code>&nbsp;&nbsp;&nbsp;&nbsp;match /tarot_readings/{date} { allow read, write: if true; }</code><br>
+        <code>&nbsp;&nbsp;&nbsp;&nbsp;match /shop_products/{docId} { allow read, write: if true; }</code><br>
+        <code>&nbsp;&nbsp;&nbsp;&nbsp;match /settings/{docId} { allow read, write: if true; }</code><br>
+        <code>&nbsp;&nbsp;&nbsp;&nbsp;match /{document=**} { allow read, write: if false; }</code><br>
+        <code>&nbsp;&nbsp;}</code><br>
+        <code>}</code>
+      </div>
+    </div>
+  </div>
+
 </div>
 </div>
 
-<!-- Firebase SDK (compat) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-
 <script>
 // ==================== 設定區 ====================
-// 1. Firebase 設定（換新專案時只需修改這裡）
 const firebaseConfig = {
   apiKey: "AIzaSyCY1ceNPz1QIAgRngezIhTXiJx_o10uUh0",
   authDomain: "tarot-1ce81.firebaseapp.com",
@@ -298,13 +335,11 @@ const firebaseConfig = {
   messagingSenderId: "943943050390",
   appId: "1:943943050390:web:488b2c155bee1630324eb7"
 };
-
-// 2. 後台管理密碼
-const ADMIN_PASSWORD = "tarot-admin-2026";
-
-// 3. Firestore 集合名稱（與前台保持一致）
-const COLLECTION      = "tarot_readings";   // 每日牌陣
-const PROD_COLLECTION = "shop_products";    // 推薦商品（獨立集合）
+const ADMIN_PASSWORD   = "tarot-admin-2026";
+const COLLECTION       = "tarot_readings";
+const PROD_COLLECTION  = "shop_products";
+const SETTINGS_DOC     = "settings/global";
+const SESSION_KEY      = "tarot_admin_unlocked";
 // =================================================
 
 firebase.initializeApp(firebaseConfig);
@@ -339,30 +374,36 @@ function today(){const d=new Date();return`${d.getFullYear()}-${String(d.getMont
 function setStatus(msg,cls){const el=document.getElementById('saveStatus');el.textContent=msg;el.className='status '+(cls||'')}
 
 // ===== 登入門 =====
-const SESSION_KEY = 'tarot_admin_unlocked';
 function tryUnlock(){
   const pwd = document.getElementById('gatePwd').value;
   const status = document.getElementById('gateStatus');
   if(pwd === ADMIN_PASSWORD){
     sessionStorage.setItem(SESSION_KEY,'1');
-    showApp();
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    document.getElementById('logoutBtn').style.display = '';
+    initApp();
   } else {
     status.textContent = '密碼錯誤，請再試一次';
     status.className = 'status err';
   }
 }
-function showApp(){
-  document.getElementById('gate').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  initApp();
-}
 document.getElementById('gateBtn').addEventListener('click', tryUnlock);
 document.getElementById('gatePwd').addEventListener('keydown', e => { if(e.key==='Enter') tryUnlock(); });
-if(sessionStorage.getItem(SESSION_KEY) === '1') showApp();
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  sessionStorage.removeItem(SESSION_KEY);
+  location.reload();
+});
+if(sessionStorage.getItem(SESSION_KEY) === '1'){
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('logoutBtn').style.display = '';
+  initApp();
+}
 
 // ===== 主應用程式 =====
 let cardCount = 2;
-let cardSelections = []; // {name, imageData}
+let cardSelections = [];
 
 function initApp(){
   document.querySelectorAll('.cnt-btn').forEach(btn => {
@@ -379,8 +420,6 @@ function initApp(){
   document.getElementById('clearBtn').addEventListener('click', clearDate);
   document.getElementById('exportBtn').addEventListener('click', exportJson);
   document.getElementById('refreshBtn').addEventListener('click', renderSavedList);
-
-  // 商品管理
   document.getElementById('addProdBtn').addEventListener('click', () => openProdForm());
   document.getElementById('refreshProdBtn').addEventListener('click', renderProductList);
   document.getElementById('saveProdBtn').addEventListener('click', saveProd);
@@ -388,13 +427,38 @@ function initApp(){
   document.getElementById('pImgFile').addEventListener('change', handleProdImage);
   document.getElementById('pImgClear').addEventListener('click', () => { currentProdImg=null; updateProdThumb(); });
 
-  // 推薦商品全域開關
   initShowProdToggle();
-
+  initTheme();
   rebuildEditors();
   renderSavedList();
   renderProductList();
   loadByDate(today(), true);
+}
+
+// ==============================
+//  前台主題
+// ==============================
+let _currentTheme = 'purple';
+
+async function initTheme(){
+  try {
+    const snap = await fdb.doc(SETTINGS_DOC).get();
+    if(snap.exists && snap.data().theme) _currentTheme = snap.data().theme;
+  } catch(e) {}
+  applyThemeChips(_currentTheme);
+}
+
+async function selectTheme(t){
+  _currentTheme = t;
+  applyThemeChips(t);
+  try { await fdb.doc(SETTINGS_DOC).set({theme: t}, {merge:true}); }
+  catch(e){ console.error('主題儲存失敗', e); }
+}
+
+function applyThemeChips(t){
+  document.querySelectorAll('.theme-chip').forEach(c => {
+    c.classList.toggle('active', c.dataset.theme === t);
+  });
 }
 
 // ==============================
@@ -425,11 +489,12 @@ function renderEditors(){
           <div class="cs-list" id="list${i}"></div>
           <div id="selTag${i}"></div>
         </div>
-
         <div>
           <label class="lbl">牌面圖片（選填，建議 &lt; 500KB）</label>
           <div class="img-upload-row">
-            <div class="img-thumb" id="thumb${i}"><span id="thumbSym${i}">${cardSelections[i]?.name ? getSymbol(cardSelections[i].name) : LABELS[i]}</span></div>
+            <div class="img-thumb" id="thumb${i}">
+              <span style="font-family:'Cinzel',serif;font-size:16px;font-weight:700;color:rgba(107,63,192,.6)">${lbl}</span>
+            </div>
             <div class="img-actions">
               <label class="img-upload-label" for="imgFile${i}">📁 上傳圖片</label>
               <input type="file" id="imgFile${i}" accept="image/*" class="sr-only">
@@ -438,7 +503,6 @@ function renderEditors(){
             </div>
           </div>
         </div>
-
         <div class="row2">
           <div><label class="lbl">今日標題</label><input type="text" id="title${i}" placeholder="例如：社交順流，分享讓事情更順"></div>
           <div><label class="lbl">小建議 tip</label><input type="text" id="tip${i}" placeholder="例如：可以試著放慢步調 🌸"></div>
@@ -449,7 +513,6 @@ function renderEditors(){
 
     buildSelectList(i, cardSelections[i]?.name || null);
     updateThumb(i);
-
     document.getElementById('search'+i).addEventListener('input', e => filterList(i, e.target.value));
     document.getElementById('imgFile'+i).addEventListener('change', e => handleImageUpload(i, e));
     document.getElementById('imgClear'+i).addEventListener('click', () => clearImage(i));
@@ -459,16 +522,13 @@ function renderEditors(){
 function buildSelectList(idx, selected){
   const list = document.getElementById('list'+idx);
   list.innerHTML = '';
-
-  // 「不指定牌名」選項（置頂）
   const clearBtn = document.createElement('button');
   clearBtn.type = 'button';
   clearBtn.className = 'cs-clear';
-  clearBtn.innerHTML = '✕ 不指定牌名（顯示代號 ' + LABELS[idx] + '）';
+  clearBtn.innerHTML = `✕ 不指定牌名（前台顯示代號 ${LABELS[idx]}）`;
   if(!selected) clearBtn.classList.add('sel');
   clearBtn.addEventListener('click', () => selectCard(idx, null));
   list.appendChild(clearBtn);
-
   TAROT_ALL.forEach(name => {
     const btn = document.createElement('button');
     btn.type = 'button';
@@ -477,7 +537,6 @@ function buildSelectList(idx, selected){
     btn.addEventListener('click', () => selectCard(idx, name));
     list.appendChild(btn);
   });
-
   updateSelTag(idx, selected);
 }
 
@@ -494,7 +553,6 @@ function updateSelTag(idx, name){
 function filterList(idx, q){
   const list = document.getElementById('list'+idx);
   [...list.querySelectorAll('button')].forEach(btn => {
-    // 「不指定」選項永遠顯示
     if(btn.classList.contains('cs-clear')){ btn.style.display=''; return; }
     btn.style.display = (!q || btn.textContent.includes(q)) ? '' : 'none';
   });
@@ -515,7 +573,6 @@ function selectCard(idx, name){
   renderPreview();
 }
 
-// 自動壓縮圖片（避免超過 Firestore 1MB 文件上限）
 function compressImage(file, maxW=600, maxH=900, quality=0.82){
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -545,9 +602,7 @@ async function handleImageUpload(idx, e){
     const dataUrl = await compressImage(file);
     cardSelections[idx] = {...cardSelections[idx], imageData: dataUrl};
     updateThumb(idx); renderPreview();
-  } catch(err) {
-    alert('圖片處理失敗：'+err.message);
-  }
+  } catch(err) { alert('圖片處理失敗：'+err.message); }
   e.target.value = '';
 }
 
@@ -559,15 +614,18 @@ function clearImage(idx){
 function updateThumb(idx){
   const thumbEl = document.getElementById('thumb'+idx);
   const clearBtn = document.getElementById('imgClear'+idx);
+  if(!thumbEl) return;
   const imgData = cardSelections[idx]?.imageData;
-  const name = cardSelections[idx]?.name;
+  const name    = cardSelections[idx]?.name;
   if(imgData){
     thumbEl.innerHTML = `<img src="${imgData}" alt="card">`;
-    clearBtn.classList.add('show');
+    if(clearBtn) clearBtn.classList.add('show');
   } else {
-    const display = name ? getSymbol(name) : `<span style="font-family:'Cinzel',serif;font-size:16px;font-weight:700;color:rgba(107,63,192,.6)">${LABELS[idx]}</span>`;
-    thumbEl.innerHTML = `<span id="thumbSym${idx}">${display}</span>`;
-    clearBtn.classList.remove('show');
+    const display = name
+      ? getSymbol(name)
+      : `<span style="font-family:'Cinzel',serif;font-size:16px;font-weight:700;color:rgba(107,63,192,.6)">${LABELS[idx]}</span>`;
+    thumbEl.innerHTML = display;
+    if(clearBtn) clearBtn.classList.remove('show');
   }
 }
 
@@ -582,7 +640,7 @@ function renderPreview(){
     } else if(s?.name){
       mc.innerHTML = `<div class="mc-sym">${getSymbol(s.name)}</div><div class="mc-name">${s.name}</div><div class="mc-lbl">${lbl}</div>`;
     } else {
-      mc.innerHTML = `<div class="mc-lbl-big">${lbl}</div><div class="mc-name" style="color:rgba(180,155,255,.4);font-style:italic">代號顯示</div><div class="mc-lbl">${lbl}</div>`;
+      mc.innerHTML = `<div class="mc-lbl-big">${lbl}</div><div class="mc-name" style="color:rgba(180,155,255,.4);font-style:italic">代號</div><div class="mc-lbl">${lbl}</div>`;
     }
     strip.appendChild(mc);
   }
@@ -592,6 +650,7 @@ function collectPayload(){
   const cards = [];
   for(let i = 0; i < cardCount; i++){
     cards.push({
+      label: LABELS[i],
       name: cardSelections[i]?.name || '',
       imageData: cardSelections[i]?.imageData || null,
       title: document.getElementById('title'+i).value.trim(),
@@ -629,9 +688,8 @@ async function savePayload(){
     await fdb.collection(COLLECTION).doc(p.date).set(p);
     setStatus(`✓ 已儲存到雲端：${p.date}（${p.cardCount} 張）`,'ok');
     renderSavedList();
-  } catch(err) {
-    console.error(err);
-    setStatus('儲存失敗：'+err.message,'err');
+  } catch(e) {
+    setStatus('儲存失敗：'+e.message+' ← 請先部署 Firestore 規則','err');
   }
 }
 
@@ -642,26 +700,27 @@ async function loadByDate(date, silent){
   try {
     const snap = await fdb.collection(COLLECTION).doc(date).get();
     if(snap.exists) item = snap.data();
-  } catch(err) {
-    setStatus('讀取失敗：'+err.message,'err'); return;
+  } catch(e) {
+    if(!silent) setStatus('讀取失敗：'+e.message,'err'); return;
   }
   if(!item){ if(!silent) setStatus(`${date} 還沒有資料`,'err'); return; }
   document.getElementById('readingDate').value = date;
-  document.getElementById('brandName').value = item.brandName || '每日塔羅';
-  document.getElementById('brandSub').value = item.brandSub || '今日運勢占卜';
-  document.getElementById('contactLabel').value = item.contactLabel || '預約占卜';
+  document.getElementById('brandName').value   = item.brandName  || '每日塔羅';
+  document.getElementById('brandSub').value    = item.brandSub   || '今日運勢占卜';
+  document.getElementById('contactLabel').value= item.contactLabel|| '預約占卜';
   document.getElementById('contactLink').value = item.contactLink || '';
-  document.getElementById('contactCta').value = item.contactCta || '';
+  document.getElementById('contactCta').value  = item.contactCta  || '';
   cardCount = item.cardCount || item.cards?.length || 1;
   document.querySelectorAll('.cnt-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.n) === cardCount));
   cardSelections = item.cards.map(c => ({name: c.name||null, imageData: c.imageData||null}));
   renderEditors();
   item.cards.forEach((c,i) => {
     const t=document.getElementById('title'+i), r=document.getElementById('reading'+i), tp=document.getElementById('tip'+i);
-    if(t) t.value = c.title||'';
-    if(r) r.value = c.reading||'';
-    if(tp) tp.value = c.tip||'';
+    if(t) t.value  = c.title||'';
+    if(r) r.value  = c.reading||'';
+    if(tp) tp.value= c.tip||'';
     updateSelTag(i, c.name||null);
+    updateThumb(i);
   });
   renderPreview();
   if(!silent) setStatus(`已載入 ${date}`,'ok');
@@ -673,15 +732,20 @@ async function clearDate(){
   if(!confirm(`確定要從雲端刪除 ${date} 的內容嗎？此動作無法復原。`)) return;
   try {
     await fdb.collection(COLLECTION).doc(date).delete();
-    // 重設編輯器回初始狀態
+    // 完整重設回初始狀態
     cardCount = 2;
     cardSelections = [];
     document.querySelectorAll('.cnt-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.n) === 2));
+    document.getElementById('brandName').value    = '每日塔羅';
+    document.getElementById('brandSub').value     = '今日運勢占卜';
+    document.getElementById('contactLabel').value = '預約占卜';
+    document.getElementById('contactLink').value  = '';
+    document.getElementById('contactCta').value   = '如果你想深入了解更多，歡迎預約一對一占卜 🌙';
     rebuildEditors();
     setStatus(`已刪除 ${date}`,'ok');
     renderSavedList();
-  } catch(err) {
-    setStatus('刪除失敗：'+err.message,'err');
+  } catch(e) {
+    setStatus('刪除失敗：'+e.message,'err');
   }
 }
 
@@ -690,7 +754,7 @@ async function deleteByDate(date){
   try {
     await fdb.collection(COLLECTION).doc(date).delete();
     renderSavedList();
-  } catch(err) { alert('刪除失敗：'+err.message); }
+  } catch(e) { alert('刪除失敗：'+e.message); }
 }
 
 async function renderSavedList(){
@@ -700,13 +764,13 @@ async function renderSavedList(){
   try {
     const snap = await fdb.collection(COLLECTION).get();
     snap.forEach(d => docs.push({date:d.id, data:d.data()}));
-  } catch(err) {
-    el.innerHTML = `<div class="empty err">讀取失敗：${err.message}</div>`; return;
+  } catch(e) {
+    el.innerHTML = `<div class="empty err">讀取失敗：${e.message}</div>`; return;
   }
   docs.sort((a,b) => b.date.localeCompare(a.date));
   if(!docs.length){ el.innerHTML = '<div class="empty">雲端還沒有任何儲存記錄</div>'; return; }
   el.innerHTML = docs.map(({date, data}) => {
-    const names = (data.cards||[]).map(c => c.name || '(代號)').join('、');
+    const names = (data.cards||[]).map(c => c.name || `(${c.label||'?'})`).join('、');
     return `<div class="si"><div><strong>${date}</strong><span>${data.cardCount||(data.cards||[]).length} 張：${names}</span></div><div><button class="lb" data-d="${date}">載入</button><button class="lb lb-d" data-del="${date}">刪除</button></div></div>`;
   }).join('');
   el.querySelectorAll('button[data-d]').forEach(btn => btn.addEventListener('click', () => loadByDate(btn.dataset.d)));
@@ -718,19 +782,33 @@ async function exportJson(){
   try {
     const snap = await fdb.collection(COLLECTION).get();
     snap.forEach(d => docs[d.id] = d.data());
-  } catch(err) { alert('匯出失敗：'+err.message); return; }
+  } catch(e) { alert('匯出失敗：'+e.message); return; }
   const blob = new Blob([JSON.stringify(docs,null,2)], {type:'application/json'});
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'tarot-data-'+today()+'.json';
-  a.click();
+  a.href = URL.createObjectURL(blob); a.download = 'tarot-data-'+today()+'.json'; a.click();
   URL.revokeObjectURL(a.href);
 }
 
 // ==============================
-//  推薦商品全域開關
+//  推薦商品開關（純 JS，無 checkbox）
 // ==============================
-const SETTINGS_DOC = 'settings/global';
+let _showProdState = true;
+
+async function initShowProdToggle(){
+  const track = document.getElementById('showProdTrack');
+  if(!track) return;
+  try {
+    const snap = await fdb.doc(SETTINGS_DOC).get();
+    _showProdState = snap.exists ? snap.data().showProducts !== false : true;
+  } catch(e) { _showProdState = true; }
+  applyShowProdToggle(_showProdState);
+  track.addEventListener('click', async () => {
+    _showProdState = !_showProdState;
+    applyShowProdToggle(_showProdState);
+    try { await fdb.doc(SETTINGS_DOC).set({showProducts: _showProdState}, {merge:true}); }
+    catch(e){ console.error('設定儲存失敗', e); }
+  });
+}
 
 function applyShowProdToggle(show){
   const track = document.getElementById('showProdTrack');
@@ -746,23 +824,17 @@ function applyShowProdToggle(show){
 // ==============================
 //  推薦商品管理
 // ==============================
-let currentEditProdId  = null;
-let currentProdImg     = null;
-let currentProdBindings = [];   // 目前編輯中的商品所綁定的牌名陣列
+let currentEditProdId   = null;
+let currentProdImg      = null;
+let currentProdBindings = [];
 
 function openProdForm(reset=true){
   const form = document.getElementById('prodForm');
   form.style.display = 'block';
   document.getElementById('prodFormTitle').textContent = currentEditProdId ? '編輯商品' : '新增商品';
   if(reset){
-    currentEditProdId   = null;
-    currentProdImg      = null;
-    currentProdBindings = [];
-    document.getElementById('pName').value  = '';
-    document.getElementById('pPrice').value = '';
-    document.getElementById('pDesc').value  = '';
-    document.getElementById('pTag').value   = '';
-    document.getElementById('pLink').value  = '';
+    currentEditProdId = null; currentProdImg = null; currentProdBindings = [];
+    ['pName','pPrice','pDesc','pTag','pLink'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('prodStatus').textContent = '';
     updateProdThumb();
   }
@@ -773,12 +845,11 @@ function openProdForm(reset=true){
 
 function closeProdForm(){
   document.getElementById('prodForm').style.display = 'none';
-  currentEditProdId = null;
-  currentProdImg    = null;
+  currentEditProdId = null; currentProdImg = null;
 }
 
 function updateProdThumb(){
-  const thumb    = document.getElementById('pThumb');
+  const thumb = document.getElementById('pThumb');
   const clearBtn = document.getElementById('pImgClear');
   if(currentProdImg){
     thumb.innerHTML = `<img src="${currentProdImg}" style="width:100%;height:100%;object-fit:cover;display:block">`;
@@ -799,7 +870,6 @@ async function handleProdImage(e){
   e.target.value = '';
 }
 
-
 async function saveProd(){
   const name = document.getElementById('pName').value.trim();
   const statusEl = document.getElementById('prodStatus');
@@ -819,38 +889,30 @@ async function saveProd(){
     if(currentEditProdId){
       await fdb.collection(PROD_COLLECTION).doc(currentEditProdId).update(data);
     } else {
-      data.active    = true;
-      data.createdAt = new Date().toISOString();
+      data.active = true; data.createdAt = new Date().toISOString();
       await fdb.collection(PROD_COLLECTION).add(data);
     }
-    statusEl.textContent = '✓ 已儲存';
-    statusEl.className   = 'status ok';
-    closeProdForm();
-    renderProductList();
-  } catch(err) {
-    statusEl.textContent = '儲存失敗：' + err.message;
-    statusEl.className   = 'status err';
+    statusEl.textContent = '✓ 已儲存'; statusEl.className = 'status ok';
+    closeProdForm(); renderProductList();
+  } catch(e) {
+    statusEl.textContent = '儲存失敗：' + e.message; statusEl.className = 'status err';
   }
 }
 
 async function toggleProdActive(id, current){
-  try {
-    await fdb.collection(PROD_COLLECTION).doc(id).update({active: !current});
-    renderProductList();
-  } catch(err) { alert('更新失敗：' + err.message); }
+  try { await fdb.collection(PROD_COLLECTION).doc(id).update({active: !current}); renderProductList(); }
+  catch(e) { alert('更新失敗：'+e.message); }
 }
 
 async function deleteProd(id){
   if(!confirm('確定要刪除這個商品嗎？')) return;
-  try {
-    await fdb.collection(PROD_COLLECTION).doc(id).delete();
-    renderProductList();
-  } catch(err) { alert('刪除失敗：' + err.message); }
+  try { await fdb.collection(PROD_COLLECTION).doc(id).delete(); renderProductList(); }
+  catch(e) { alert('刪除失敗：'+e.message); }
 }
 
 function editProd(id, d){
-  currentEditProdId   = id;
-  currentProdImg      = d.imageData || null;
+  currentEditProdId = id;
+  currentProdImg = d.imageData || null;
   currentProdBindings = Array.isArray(d.cardBindings) ? [...d.cardBindings] : [];
   document.getElementById('pName').value  = d.name  || '';
   document.getElementById('pPrice').value = d.price || '';
@@ -869,56 +931,76 @@ async function renderProductList(){
   try {
     const snap = await fdb.collection(PROD_COLLECTION).get();
     snap.forEach(d => docs.push({id:d.id, data:d.data()}));
-  } catch(err) {
-    el.innerHTML = `<div class="empty err">讀取失敗：${err.message}</div>`; return;
+  } catch(e) {
+    el.innerHTML = `<div class="empty err">讀取失敗：${e.message}</div>`; return;
   }
   if(!docs.length){ el.innerHTML = '<div class="empty">尚無商品，點「＋ 新增商品」開始建立</div>'; return; }
   docs.sort((a,b) => (a.data.createdAt||'').localeCompare(b.data.createdAt||''));
   el.innerHTML = '';
-  const list = document.createElement('div');
-  list.className = 'saved-list';
+  const list = document.createElement('div'); list.className = 'saved-list';
   docs.forEach(({id, data:d}) => {
-    const row = document.createElement('div');
-    row.className = 'si';
-    row.style.alignItems = 'flex-start';
+    const row = document.createElement('div'); row.className='si'; row.style.alignItems='flex-start';
     const imgHtml = d.imageData
       ? `<img src="${d.imageData}" style="width:44px;height:70px;border-radius:8px;object-fit:cover;border:1.5px solid var(--border2);flex-shrink:0">`
       : `<div style="width:44px;height:70px;border-radius:8px;background:var(--surface2);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">✶</div>`;
-    const activeCls   = d.active ? 'badge-active' : 'badge-inactive';
+    const activeCls = d.active ? 'badge-active' : 'badge-inactive';
     const activeLabel = d.active ? '✓ 上架中' : '✕ 已下架';
     const meta = [d.price, d.tag].filter(Boolean).join(' · ');
     const bindings = Array.isArray(d.cardBindings) && d.cardBindings.length
-      ? `<span style="font-size:10px;color:var(--primary);display:block;margin-top:2px">綁定牌：${d.cardBindings.slice(0,3).join('、')}${d.cardBindings.length>3?'…':''}</span>`
+      ? `<span style="font-size:10px;color:var(--primary);display:block;margin-top:2px">綁定：${d.cardBindings.slice(0,4).map(b=>b.startsWith('pos:')?'位置'+b.slice(4):b).join('、')}${d.cardBindings.length>4?'…':''}</span>`
       : `<span style="font-size:10px;color:var(--faint);display:block;margin-top:2px">通用（全部牌）</span>`;
     row.innerHTML = `
       <div style="display:flex;align-items:flex-start;gap:.7rem;flex:1;min-width:0">
         ${imgHtml}
-        <div style="flex:1;min-width:0">
-          <strong>${d.name}</strong>
-          ${meta ? `<span>${meta}</span>` : ''}
-          ${bindings}
-        </div>
+        <div style="flex:1;min-width:0"><strong>${d.name}</strong>${meta?`<span>${meta}</span>`:''} ${bindings}</div>
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:.3rem;flex-shrink:0">
-        <button class="lb ${activeCls}" data-toggle="${id}" data-active="${d.active}">${activeLabel}</button>
+        <button class="lb ${activeCls}" data-toggle="${id}">${activeLabel}</button>
         <button class="lb" data-edit="${id}">編輯</button>
         <button class="lb lb-d" data-delprod="${id}">刪除</button>
       </div>`;
     list.appendChild(row);
-    row.querySelector(`[data-toggle="${id}"]`).addEventListener('click', () => toggleProdActive(id, d.active));
-    row.querySelector(`[data-edit="${id}"]`).addEventListener('click', () => editProd(id, d));
-    row.querySelector(`[data-delprod="${id}"]`).addEventListener('click', () => deleteProd(id));
+    row.querySelector(`[data-toggle]`).addEventListener('click', () => toggleProdActive(id, d.active));
+    row.querySelector(`[data-edit]`).addEventListener('click', () => editProd(id, d));
+    row.querySelector(`[data-delprod]`).addEventListener('click', () => deleteProd(id));
   });
   el.appendChild(list);
 }
 
 // ==============================
-//  牌面綁定面板
+//  牌面綁定面板（支援位置 pos:A 和牌名）
 // ==============================
 function buildBindList(){
   const container = document.getElementById('bindList');
   if(!container) return;
   container.innerHTML = '';
+
+  // 位置綁定（A/B/C/D/E）
+  const posHeader = document.createElement('div');
+  posHeader.className = 'bind-section-title';
+  posHeader.textContent = '── 依位置綁定（A/B/C…代號牌）──';
+  container.appendChild(posHeader);
+  LABELS.forEach(lbl => {
+    const posKey = 'pos:' + lbl;
+    const item = document.createElement('label');
+    item.className = 'bind-pos-item';
+    item.innerHTML = `<input type="checkbox" data-card="${posKey}" ${currentProdBindings.includes(posKey)?'checked':''}> 位置 ${lbl}（第 ${LABELS.indexOf(lbl)+1} 張牌）`;
+    item.querySelector('input').addEventListener('change', e => {
+      if(e.target.checked){
+        if(!currentProdBindings.includes(posKey)) currentProdBindings.push(posKey);
+      } else {
+        currentProdBindings = currentProdBindings.filter(n => n !== posKey);
+      }
+      updateBindSummary();
+    });
+    container.appendChild(item);
+  });
+
+  // 牌名綁定（78 張）
+  const nameHeader = document.createElement('div');
+  nameHeader.className = 'bind-section-title';
+  nameHeader.textContent = '── 依牌名綁定（指定牌名才顯示）──';
+  container.appendChild(nameHeader);
   TAROT_ALL.forEach(name => {
     const item = document.createElement('label');
     item.style.cssText = 'display:flex;align-items:center;gap:.4rem;padding:.28rem .65rem;cursor:pointer;font-size:12px;border-bottom:1px solid var(--border)';
@@ -950,7 +1032,13 @@ function filterBindList(q){
   if(!container) return;
   [...container.querySelectorAll('label')].forEach(lbl => {
     const card = lbl.querySelector('input')?.dataset.card || '';
+    // position labels always show
+    if(card.startsWith('pos:')){ lbl.style.display=''; return; }
     lbl.style.display = (!q || card.includes(q)) ? '' : 'none';
+  });
+  // Section headers: hide bind-section-title if all children below are hidden
+  [...container.querySelectorAll('.bind-section-title')].forEach(h => {
+    h.style.display = '';
   });
 }
 
@@ -963,34 +1051,16 @@ function clearAllBindings(){
 function updateBindSummary(){
   const el = document.getElementById('bindSummary');
   if(!el) return;
-  el.textContent = currentProdBindings.length
-    ? `已綁定 ${currentProdBindings.length} 張牌：${currentProdBindings.slice(0,3).join('、')}${currentProdBindings.length>3?'…':''}`
-    : '通用（全部牌面皆顯示）';
-  el.style.color = currentProdBindings.length ? 'var(--primary)' : 'var(--muted)';
-}
-
-// ==============================
-//  推薦商品開關（純 JS 狀態，無 checkbox，無 label 干擾）
-// ==============================
-let _showProdState = true;
-
-async function initShowProdToggle(){
-  const track = document.getElementById('showProdTrack');
-  if(!track) return;
-
-  // 讀取目前設定
-  try {
-    const snap = await fdb.doc(SETTINGS_DOC).get();
-    _showProdState = snap.exists ? snap.data().showProducts !== false : true;
-  } catch(e) { _showProdState = true; }
-  applyShowProdToggle(_showProdState);
-
-  track.addEventListener('click', async () => {
-    _showProdState = !_showProdState;
-    applyShowProdToggle(_showProdState);
-    try { await fdb.doc(SETTINGS_DOC).set({showProducts: _showProdState}, {merge:true}); }
-    catch(err){ console.error('設定儲存失敗', err); }
-  });
+  if(!currentProdBindings.length){
+    el.textContent = '通用（全部牌面皆顯示）';
+    el.style.color = 'var(--muted)';
+    return;
+  }
+  const posBindings = currentProdBindings.filter(b => b.startsWith('pos:')).map(b => '位置'+b.slice(4));
+  const nameBindings = currentProdBindings.filter(b => !b.startsWith('pos:'));
+  const parts = [...posBindings, ...nameBindings];
+  el.textContent = `已綁定 ${currentProdBindings.length} 項：${parts.slice(0,3).join('、')}${parts.length>3?'…':''}`;
+  el.style.color = 'var(--primary)';
 }
 </script>
 </body>
